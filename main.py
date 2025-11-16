@@ -1,16 +1,22 @@
-# This is a sample Python script.
+from langchain_ollama.llms import OllamaLLM
+from langchain_core.prompts import ChatPromptTemplate
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+model = OllamaLLM(model="llama3.2:1b")
 
+template = """
+You are an expert in answering questions about pizza restaurants.
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+Here are some relevant reviews: {reviews}
 
+Here is the question to answer: {question}
+"""
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+prompt = ChatPromptTemplate.from_template(template)
+chain = prompt | model
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+result = chain.invoke({
+    "reviews": ["No reviews available"],
+    "question": "What is the best pizza place in town?"
+})
+
+print(result)
